@@ -19,6 +19,10 @@ class ReactFlagsSelect extends Component {
 		this.onSelect = this.onSelect.bind(this);
 		this.filterSearch = this.filterSearch.bind(this);
 		this.setCountries = this.setCountries.bind(this);
+
+		this.selectedFlag = React.createRef();
+		this.flagOptions	= React.createRef();
+		this.filterText		= React.createRef();
 	}
 
 	toggleOptions() {
@@ -42,7 +46,7 @@ class ReactFlagsSelect extends Component {
 	}
 
 	closeOptions(event) {
-		if (event.target !== this.refs.selectedFlag && event.target !== this.refs.flagOptions && event.target !== this.refs.filterText ) {
+		if (event.target !== this.selectedFlag.current && event.target !== this.flagOptions.current && event.target !== this.filterText.current ) {
 			this.setState({
 				openOptions: false
 			});
@@ -115,7 +119,7 @@ class ReactFlagsSelect extends Component {
 	}
 
 	componentDidMount() {
-		this.setCountries();		
+		this.setCountries();
 		!this.props.disabled && window.addEventListener("click", this.closeOptions);
 	}
 
@@ -138,7 +142,7 @@ class ReactFlagsSelect extends Component {
 
 		return (
 			<div className={`flag-select ${this.props.className ? this.props.className :  ""}`}>
-				<div ref="selectedFlag" style={{fontSize: `${selectedSize}px`}} className={`selected--flag--option ${this.props.disabled ? 'no--focus' : ''}`} tabIndex="0" onClick={this.toggleOptions} onKeyUp={evt => this.toggleOptionsWithKeyboard(evt)}>
+				<div ref={this.selectedFlag} style={{fontSize: `${selectedSize}px`}} className={`selected--flag--option ${this.props.disabled ? 'no--focus' : ''}`} tabIndex="0" onClick={this.toggleOptions} onKeyUp={evt => this.toggleOptionsWithKeyboard(evt)}>
 					{isSelected &&
 						<span className="country-flag" style={{width: `${selectedSize}px`, height: `${selectedSize}px`}} >
 							<img src={require(`../flags/${isSelected.toLowerCase()}.svg`)} />
@@ -155,10 +159,10 @@ class ReactFlagsSelect extends Component {
 				</div>
 
 				{this.state.openOptions &&
-					<div ref="flagOptions" style={{fontSize: `${optionsSize}px`}} className={`flag-options ${alignClass}`}>
+					<div ref={this.flagOptions} style={{fontSize: `${optionsSize}px`}} className={`flag-options ${alignClass}`}>
 						{this.props.searchable &&
 							<div className="filterBox">
-								<input type="text" placeholder={this.props.searchPlaceholder} ref="filterText"  onChange={this.filterSearch}/>
+								<input type="text" placeholder={this.props.searchPlaceholder} ref={this.filterText}  onChange={this.filterSearch}/>
 							</div>
 						}
 						{(this.state.filter ? this.state.filteredCountries : this.state.countries).map( countryCode =>
